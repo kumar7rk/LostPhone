@@ -5,38 +5,44 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
+import android.util.Log;
 import android.widget.Toast;
 
 /**
  * Created by Rohit on 8/07/2016.
  */
-public class SMS extends BroadcastReceiver
-{
-    @Override
-    public void onReceive(Context context, Intent intent)
-    {
+public class SMS extends BroadcastReceiver {
+
+    //final SmsManager sms = SmsManager.getDefault();
+
+    public void onReceive(Context context, Intent intent) {
+
+        String message = "";
+        String senderNum = "";
         final Bundle bundle = intent.getExtras();
         try {
-            if (bundle != null)
-            {
+            if (bundle != null) {
                 final Object[] pdusObj = (Object[]) bundle.get("pdus");
-                for (int i = 0; i < pdusObj .length; i++)
-                {
-                    SmsMessage currentMessage = SmsMessage.createFromPdu((byte[])                                                                                                    pdusObj[i]);
+                for (int i = 0; i < pdusObj.length; i++) {
+                    SmsMessage currentMessage = SmsMessage.createFromPdu((byte[]) pdusObj[i]);
                     String phoneNumber = currentMessage.getDisplayOriginatingAddress();
-                    String senderNum = phoneNumber ;
-                    String message = currentMessage .getDisplayMessageBody();
-                    Toast.makeText(context,"message:"+message,Toast.LENGTH_SHORT).show();
-                    try
-                    {
-                        if (senderNum.equals("1010"))
-                        {
-                        }
-                    }
-                    catch(Exception e){}
+                    senderNum = phoneNumber;
+                    message = currentMessage.getDisplayMessageBody();
+                    Log.i("SmsReceiver", "senderNum: " + senderNum + "; message: " + message);
+
+                    int duration = Toast.LENGTH_LONG;
+                    Toast toast = Toast.makeText(context,"senderNum: "+ senderNum + ", message: " + message, duration);
+                    toast.show();
                 }
             }
-        } catch (Exception e){
-          }
+        } catch (Exception e) {
+            Log.e("SmsReceiver", "Exception smsReceiver" +e);
+        }
+
+        intent.putExtra("Message", message);
+        intent.putExtra("Sender", senderNum);
+        //intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, MainActivity.class);
+        context.startActivity(intent);
     }
 }
