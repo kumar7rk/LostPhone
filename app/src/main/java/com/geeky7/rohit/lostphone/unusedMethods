@@ -1,0 +1,38 @@
+private Camera openFrontCamera() {
+        Main.showToast("openFrontCamera called!");
+        int cameraCount = 0;
+        Camera cam = null;
+        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+        cameraCount = Camera.getNumberOfCameras();
+        for (int camIdx = 0; camIdx < cameraCount; camIdx++) {
+            Camera.getCameraInfo(camIdx, cameraInfo);
+            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                try {
+                    cam = Camera.open(camIdx);
+                } catch (RuntimeException e) {
+                    Log.e("Camera", "Camera failed to open: " + e.getLocalizedMessage());
+                }
+            }
+        }
+
+        return cam;
+    }
+    public void captureImage() {
+
+        // Creating folders for Image
+        String imageFolderPath = Environment.getExternalStorageDirectory().toString()
+                + "/Kumar";
+        File imagesFolder = new File(imageFolderPath);
+        imagesFolder.mkdirs();
+
+        // Generating file name
+     String imageName = new Date().toString() + ".png";
+
+        // Creating image here
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(imageFolderPath, imageName)));
+        startActivityForResult(takePictureIntent,
+                1);
+
+    }
+

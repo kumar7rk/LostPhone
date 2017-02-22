@@ -8,10 +8,12 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.geeky7.rohit.lostphone.activities.MainActivity;
+
 /**
  * Created by Rohit on 8/07/2016.
  */
-public class SMS extends BroadcastReceiver {
+public class SMSReceiver extends BroadcastReceiver {
 
     //final SmsManager sms = SmsManager.getDefault();
 
