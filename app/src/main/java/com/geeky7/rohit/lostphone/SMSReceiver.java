@@ -34,16 +34,15 @@ public class SMSReceiver extends BroadcastReceiver {
 
                     int duration = Toast.LENGTH_LONG;
                     Toast toast = Toast.makeText(context,"senderNum: "+ senderNum + ", message: " + message, duration);
-                    toast.show();
+                 //   toast.show();
                 }
             }
         } catch (Exception e) {
             Log.e("SmsReceiver", "Exception smsReceiver" +e);
         }
-
         intent.putExtra("Message", message);
         intent.putExtra("Sender", senderNum);
-        //intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClass(context, MainActivity.class);
         context.startActivity(intent);
     }

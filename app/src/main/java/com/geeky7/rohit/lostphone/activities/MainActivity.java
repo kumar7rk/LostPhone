@@ -24,16 +24,36 @@ import java.util.TreeMap;
 public class MainActivity extends Activity implements OnPictureCapturedListener, ActivityCompat.OnRequestPermissionsResultCallback{
     TextView sms;
     Mail mail;
+    String message = "No text", sender;
     private OnPictureCapturedListener capturedListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mail = new Mail("rohitkumarrk1992@gmail.com","9780127576");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         sms = (TextView)findViewById(R.id.sms);
+
         capturedListener = MainActivity.this;
+
         checkPermission();
-        new PictureService().startCapturing(this,capturedListener);
+
+        mail = new Mail("rohitkumarrk1992@gmail.com","9780127576");
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            message = extras.getString("Message");
+            sender = extras.getString("Sender");
+            Log.i("Text","Text is:"+ message);
+        }
+        // #1 "Hi there, thanks for testing SMSTech. We offer Australia's simplest way to send SMS. No contracts and no monthly fees. Free sign up with 25 messages to t
+        // #2 rial: http://bit.ly/smstechtrial
+
+        if (/*message.equals("Take Picture")|| */ "rial: http://bit.ly/smstechtrial" .equals(message)){
+            Main.showToast("Text Matched taking picture now");
+            new PictureService().startCapturing(this,capturedListener);
+
+        }
     }
     public void checkPermission() {
         ContextCompat.checkSelfPermission(this,
@@ -57,8 +77,6 @@ public class MainActivity extends Activity implements OnPictureCapturedListener,
 
     @Override
     public void onDoneCapturingAllPhotos(TreeMap<String, byte[]> picturesTaken) {
-
-//        Main.showToast("OnDone capturing all photos");
         try {
             sendEmailBackground();
         } catch (Exception e) {
@@ -85,10 +103,9 @@ public class MainActivity extends Activity implements OnPictureCapturedListener,
     public void sendEmailBackground() throws Exception {
         Log.i("PictureService","Called send email background");
         File file = new File(Environment.getExternalStorageDirectory()+"/" +"LostPhone/" +"1.jpg");
-//        mail.addAttachment("1.jpg");
         mail.addAttachment(file.toString());
         Log.i("PictureService","Attachment added");
-       boolean send =  mail.send();
+        boolean send =  mail.send();
         Log.i("PictureService","sent?" +""+ send);
     }
 }
