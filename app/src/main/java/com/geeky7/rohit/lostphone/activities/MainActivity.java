@@ -2,8 +2,6 @@ package com.geeky7.rohit.lostphone.activities;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
@@ -83,23 +81,6 @@ public class MainActivity extends Activity implements OnPictureCapturedListener,
             e.printStackTrace();
         }
     }
-    public void sendEmail(TreeMap<String,byte[]> takenPictures){
-        final File file = new File(Environment.getExternalStorageDirectory()+"/" +"LostPhone/" +"1.jpg");
-        String path = file.toString();
-        Main.showToast(path);
-
-        Uri U = Uri.fromFile(file);
-        Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-
-        emailIntent.setType("application/image");
-        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"rohitkumarrk1992@gmail.com"});
-        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "LostPhone");
-        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Picture taken ");
-        emailIntent.putExtra(Intent.EXTRA_STREAM,U);
-
-//        startActivity(emailIntent);
-        startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-    }
     public void sendEmailBackground() throws Exception {
         Log.i("PictureService","Called send email background");
         File file = new File(Environment.getExternalStorageDirectory()+"/" +"LostPhone/" +"1.jpg");
@@ -107,5 +88,11 @@ public class MainActivity extends Activity implements OnPictureCapturedListener,
         Log.i("PictureService","Attachment added");
         boolean send =  mail.send();
         Log.i("PictureService","sent?" +""+ send);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        finish();
     }
 }
