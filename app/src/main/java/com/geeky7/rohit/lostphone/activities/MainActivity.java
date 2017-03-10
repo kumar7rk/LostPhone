@@ -2,10 +2,10 @@ package com.geeky7.rohit.lostphone.activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -13,6 +13,7 @@ import com.geeky7.rohit.lostphone.Mail;
 import com.geeky7.rohit.lostphone.Main;
 import com.geeky7.rohit.lostphone.R;
 import com.geeky7.rohit.lostphone.listeners.OnPictureCapturedListener;
+import com.geeky7.rohit.lostphone.services.LocationService;
 import com.geeky7.rohit.lostphone.services.PictureService;
 
 import java.io.File;
@@ -47,15 +48,19 @@ public class MainActivity extends Activity implements OnPictureCapturedListener,
         // #1 "Hi there, thanks for testing SMSTech. We offer Australia's simplest way to send SMS. No contracts and no monthly fees. Free sign up with 25 messages to t
         // #2 rial: http://bit.ly/smstechtrial
 
-        if (/*message.equals("Take Picture")|| */ "rial: http://bit.ly/smstechtrial" .equals(message)){
+        if ("Take Picture".equals(message)||  "rial: http://bit.ly/smstechtrial" .equals(message)){
             Main.showToast("Text Matched taking picture now");
             new PictureService().startCapturing(this,capturedListener);
-
+            startService();
         }
     }
+    private void startService() {
+        Intent serviceIntent = new Intent(getApplicationContext(), LocationService.class);
+        startService(serviceIntent);
+    }
     public void checkPermission() {
-        ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_SMS);
+        /*ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_SMS);*/
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.READ_SMS},
                 0);
@@ -65,9 +70,15 @@ public class MainActivity extends Activity implements OnPictureCapturedListener,
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 0);
-        ActivityCompat.requestPermissions(this,
+        /*ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                0);*/
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                 0);
+        /*ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                0);*/
     }
         @Override
     public void onCaptureDone(String pictureUrl, byte[] pictureData) {
@@ -89,6 +100,7 @@ public class MainActivity extends Activity implements OnPictureCapturedListener,
         boolean send =  mail.send();
         Log.i("PictureService","sent?" +""+ send);
     }
+
 
     @Override
     protected void onResume() {

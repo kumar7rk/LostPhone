@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.geeky7.rohit.lostphone.activities.MainActivity;
 
@@ -15,10 +14,7 @@ import com.geeky7.rohit.lostphone.activities.MainActivity;
  */
 public class SMSReceiver extends BroadcastReceiver {
 
-    //final SmsManager sms = SmsManager.getDefault();
-
     public void onReceive(Context context, Intent intent) {
-
         String message = "";
         String senderNum = "";
         final Bundle bundle = intent.getExtras();
@@ -31,10 +27,6 @@ public class SMSReceiver extends BroadcastReceiver {
                     senderNum = phoneNumber;
                     message = currentMessage.getDisplayMessageBody();
                     Log.i("SmsReceiver", "senderNum: " + senderNum + "; message: " + message);
-
-                    int duration = Toast.LENGTH_LONG;
-                    Toast toast = Toast.makeText(context,"senderNum: "+ senderNum + ", message: " + message, duration);
-                 //   toast.show();
                 }
             }
         } catch (Exception e) {
