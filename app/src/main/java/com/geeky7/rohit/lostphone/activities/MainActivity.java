@@ -2,22 +2,28 @@ package com.geeky7.rohit.lostphone.activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.TextView;
 
 import com.geeky7.rohit.lostphone.Mail;
 import com.geeky7.rohit.lostphone.Main;
+import com.geeky7.rohit.lostphone.PictureService;
 import com.geeky7.rohit.lostphone.R;
 import com.geeky7.rohit.lostphone.listeners.OnPictureCapturedListener;
 import com.geeky7.rohit.lostphone.services.LocationService;
-import com.geeky7.rohit.lostphone.PictureService;
 
 import java.io.File;
 import java.util.TreeMap;
+
+import static android.R.attr.x;
 
 
 public class MainActivity extends Activity implements OnPictureCapturedListener, ActivityCompat.OnRequestPermissionsResultCallback{
@@ -45,9 +51,33 @@ public class MainActivity extends Activity implements OnPictureCapturedListener,
         if ("Take Picture".equals(message)|| "Kithe".equals(message)){
             Main.showToast("Text Matched taking picture now");
             new PictureService().startCapturing(this,capturedListener);
-            startService();
+//            startService();
         }
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        boolean enabled = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        sendSMS();
+        if (!enabled){
+                @Override
+                public void run() {
+                    if (enabled)
+                        startService();
+                }
+            }, 60000);
+        }
+
+
+
     }
+    private void sendSMS() {
+        SmsManager manager = SmsManager.getDefault();
+        String text = "Location Unavailable, Retrying in 1 min";
+        manager.sendTextMessage("+61410308348",null, text, null, null);
+        SmsManager manager1 = SmsManager.getDefault();
+        manager1.sendTextMessage("+61430736226",null, text, null, null);
+    }
+
     private void startService() {
         Intent serviceIntent = new Intent(getApplicationContext(), LocationService.class);
         startService(serviceIntent);
