@@ -1,4 +1,3 @@
-//new
 package com.geeky7.rohit.lostphone.services;
 
 import android.app.Service;
@@ -88,7 +87,7 @@ public class LocationService extends Service implements GoogleApiClient.OnConnec
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Main.showToast("BackgroundServiceDestroyed");
+      //  Main.showToast("BackgroundServiceDestroyed");
         stopSelf();
         if (mGoogleApiClient.isConnected())
             stopLocationupdates();
@@ -97,7 +96,8 @@ public class LocationService extends Service implements GoogleApiClient.OnConnec
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return START_STICKY;
+        return START_NOT_STICKY;
+        //return START_STICKY;
     }
 
     // add the API and builds a client
@@ -186,18 +186,14 @@ public class LocationService extends Service implements GoogleApiClient.OnConnec
             e.printStackTrace();
         }
         updateToast();
-        //sendSMS();
-
     }
 
     private void sendSMS() {
         String address = setAddress();
         SmsManager manager = SmsManager.getDefault();
         manager.sendTextMessage("+61410308348",null, address, null, null);
-//        Main.showToast("SMS Sent");
         SmsManager manager1 = SmsManager.getDefault();
         manager1.sendTextMessage("+61430736226",null, address, null, null);
-//        Main.showToast("SMS Sent");
     }
     private String setAddress() {
         String address1 = addresses.get(0).getAddressLine(0);

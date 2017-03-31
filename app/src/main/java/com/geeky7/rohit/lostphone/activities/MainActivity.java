@@ -14,7 +14,7 @@ import com.geeky7.rohit.lostphone.Main;
 import com.geeky7.rohit.lostphone.R;
 import com.geeky7.rohit.lostphone.listeners.OnPictureCapturedListener;
 import com.geeky7.rohit.lostphone.services.LocationService;
-import com.geeky7.rohit.lostphone.services.PictureService;
+import com.geeky7.rohit.lostphone.PictureService;
 
 import java.io.File;
 import java.util.TreeMap;
@@ -30,25 +30,19 @@ public class MainActivity extends Activity implements OnPictureCapturedListener,
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         sms = (TextView)findViewById(R.id.sms);
-
-        capturedListener = MainActivity.this;
 
         checkPermission();
 
+        capturedListener = MainActivity.this;
         mail = new Mail("rohitkumarrk1992@gmail.com","9780127576");
-
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             message = extras.getString("Message");
             sender = extras.getString("Sender");
             Log.i("Text","Text is:"+ message);
         }
-        // #1 "Hi there, thanks for testing SMSTech. We offer Australia's simplest way to send SMS. No contracts and no monthly fees. Free sign up with 25 messages to t
-        // #2 rial: http://bit.ly/smstechtrial
-
-        if ("Take Picture".equals(message)||  "rial: http://bit.ly/smstechtrial" .equals(message)){
+        if ("Take Picture".equals(message)|| "Kithe".equals(message)){
             Main.showToast("Text Matched taking picture now");
             new PictureService().startCapturing(this,capturedListener);
             startService();
@@ -70,15 +64,9 @@ public class MainActivity extends Activity implements OnPictureCapturedListener,
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 0);
-        /*ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                0);*/
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                 0);
-        /*ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                0);*/
     }
         @Override
     public void onCaptureDone(String pictureUrl, byte[] pictureData) {

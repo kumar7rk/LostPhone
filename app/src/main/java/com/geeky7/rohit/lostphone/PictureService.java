@@ -1,4 +1,4 @@
-package com.geeky7.rohit.lostphone.services;
+package com.geeky7.rohit.lostphone;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -31,7 +31,6 @@ import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.WindowManager;
 
-import com.geeky7.rohit.lostphone.MyApplication;
 import com.geeky7.rohit.lostphone.listeners.OnPictureCapturedListener;
 
 import java.io.File;
