@@ -59,6 +59,7 @@ public class MainActivity extends Activity implements OnPictureCapturedListener,
 
         sendSMS();
         if (!enabled){
+              handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if (enabled)
