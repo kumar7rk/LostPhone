@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -23,13 +22,11 @@ import com.geeky7.rohit.lostphone.services.LocationService;
 import java.io.File;
 import java.util.TreeMap;
 
-import static android.R.attr.x;
-
 
 public class MainActivity extends Activity implements OnPictureCapturedListener, ActivityCompat.OnRequestPermissionsResultCallback{
     TextView sms;
     Mail mail;
-    String message = "No text", sender;
+    String message = "No text", sender = "No one";
     private OnPictureCapturedListener capturedListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,36 +37,45 @@ public class MainActivity extends Activity implements OnPictureCapturedListener,
 
         checkPermission();
 
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        boolean enabled = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
         capturedListener = MainActivity.this;
-        mail = new Mail("rohitkumarrk1992@gmail.com","9780127576");
+        mail = new Mail("7geeky@gmail.com","creative7");
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             message = extras.getString("Message");
             sender = extras.getString("Sender");
             Log.i("Text","Text is:"+ message);
+
+            /* sending an acknowledgement for message received from "+61430736226" which mentions keyword
+             job*/
+            if (sender.contains("36226") && message.contains("job")){
+                String text = "Message Received!";
+                SmsManager manager1 = SmsManager.getDefault();
+                manager1.sendTextMessage("+61430736226",null, text, null, null);
+            }
         }
+
         if ("Take Picture".equals(message)|| "Kithe".equals(message)){
             Main.showToast("Text Matched taking picture now");
             new PictureService().startCapturing(this,capturedListener);
-//            startService();
+            startService();
+
+            /*if (!enabled){
+                sendSMS();
+                Handler handler = new Handler();
+                  handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (enabled)
+                            startService();
+                    }
+                }, 60000);
+            }
+            else if (enabled)
+                startService();*/
         }
-        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        boolean enabled = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-        sendSMS();
-        if (!enabled){
-              handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (enabled)
-                        startService();
-                }
-            }, 60000);
-        }
-
-
-
     }
     private void sendSMS() {
         SmsManager manager = SmsManager.getDefault();
@@ -124,6 +130,6 @@ public class MainActivity extends Activity implements OnPictureCapturedListener,
     @Override
     protected void onResume() {
         super.onResume();
-        finish();
+//        finish();
     }
 }
