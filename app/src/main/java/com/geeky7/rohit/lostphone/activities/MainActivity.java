@@ -35,6 +35,7 @@ public class MainActivity extends Activity implements OnPictureCapturedListener,
         setContentView(R.layout.activity_main);
         sms = (TextView)findViewById(R.id.sms);
 
+        // checking of the location permission is granted by user
         checkPermission();
 
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -43,11 +44,12 @@ public class MainActivity extends Activity implements OnPictureCapturedListener,
         capturedListener = MainActivity.this;
         mail = new Mail("7geeky@gmail.com","creative7");
         Bundle extras = getIntent().getExtras();
+
+        // when a message is receives this code runs
         if (extras != null) {
             message = extras.getString("Message");
             sender = extras.getString("Sender");
             Log.i("Text","Text is:"+ message);
-
             /* sending an acknowledgement for message received from "+61430736226" which mentions keyword
              job*/
             if (sender.contains("36226") && message.contains("job")){
@@ -57,11 +59,15 @@ public class MainActivity extends Activity implements OnPictureCapturedListener,
             }
         }
 
+        // this if statement check for the keywords in all the incoming messages
+//*         // checking it the other way around because the condition for bundle is not checked
         if ("Take Picture".equals(message)|| "Kithe".equals(message)){
             Main.showToast("Text Matched taking picture now");
+            // if the message contains the keywords then start the picture service - which basically takes the picture
+            // (secretly)
             new PictureService().startCapturing(this,capturedListener);
+            // this message initiated the location service which fetches the location and converts into an address
             startService();
-
             /*if (!enabled){
                 sendSMS();
                 Handler handler = new Handler();
@@ -117,6 +123,8 @@ public class MainActivity extends Activity implements OnPictureCapturedListener,
             e.printStackTrace();
         }
     }
+    // this method is used to send the captures image at this stage the code looks for an image in the directory
+//*    // another way to this could be to save the image in the bitmap and not on the device why? would save the uploading and downloading time.
     public void sendEmailBackground() throws Exception {
         Log.i("PictureService","Called send email background");
         File file = new File(Environment.getExternalStorageDirectory()+"/" +"LostPhone/" +"1.jpg");
